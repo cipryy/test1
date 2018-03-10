@@ -20,8 +20,11 @@ namespace TowerDefense
         Wall,
         Open,
         StartPoint,
-        EndPoint
-
+        EndPoint,
+        Up,
+        Down,
+        Left,
+        Right
     }
 
 

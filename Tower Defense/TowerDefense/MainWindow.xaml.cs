@@ -155,7 +155,7 @@ namespace TowerDefense
                         backgroundBrush.ImageSource = img.Source;
                         r.Fill = backgroundBrush;
                     }
-                    if (map[i][j].Type.Type == "Open")
+                    if (map[i][j].Type.Type == "Open" || map[i][j].Type.Type == "Right" || map[i][j].Type.Type == "Left" || map[i][j].Type.Type == "Down" || map[i][j].Type.Type == "Up")
                     {
                         Image img = Application.Current.Resources["Open"] as Image;
                         backgroundBrush.ImageSource = img.Source;

@@ -93,11 +93,25 @@ namespace TowerDefense
                             map[i][j].Y = i * 20;
                             break;
                         case Celltype.Open:
+                        case Celltype.Up:
+                        case Celltype.Down:
+                        case Celltype.Left:
+                        case Celltype.Right:
                             map[i][j] = new World();
                             map[i][j].Type = new CellType();
-                            map[i][j].Type.Type = "Open";
                             map[i][j].X = j * 20;
                             map[i][j].Y = i * 20;
+
+                            if (ct[i][j] == Celltype.Open)
+                                map[i][j].Type.Type = "Open";
+                            if (ct[i][j] == Celltype.Up)
+                                map[i][j].Type.Type = "Up";
+                            if (ct[i][j] == Celltype.Down)
+                                map[i][j].Type.Type = "Down";
+                            if (ct[i][j] == Celltype.Left)
+                                map[i][j].Type.Type = "Left";
+                            if (ct[i][j] == Celltype.Right)
+                                map[i][j].Type.Type = "Right";
                             break;
                         case Celltype.StartPoint:
                             map[i][j] = new World();
@@ -131,9 +145,12 @@ namespace TowerDefense
                     Rectangle r = new Rectangle();
                     r.Height = 20;
                     r.Width = 20;
-
+                    
                     if (map[i][j].Type.Type == "Wall")
                     {
+                        r.MouseEnter += rectangleEnter;
+                        r.MouseLeave += rectangleLeave;
+
                         Image img = Application.Current.Resources["Wall"] as Image;
                         backgroundBrush.ImageSource = img.Source;
                         r.Fill = backgroundBrush;
@@ -165,5 +182,22 @@ namespace TowerDefense
                 }
         }
 
+        private void rectangleEnter(object sender, MouseEventArgs e)
+        {
+            
+            Rectangle r = sender as Rectangle;
+            
+            r.Fill = Brushes.Blue;
+
+        }
+
+        private void rectangleLeave(object sender, MouseEventArgs e)
+        {
+            Rectangle r = sender as Rectangle;
+            ImageBrush backgroundBrush = new ImageBrush();
+            Image img = Application.Current.Resources["Wall"] as Image;
+            backgroundBrush.ImageSource = img.Source;
+            r.Fill = backgroundBrush;
+        }
     }
 }

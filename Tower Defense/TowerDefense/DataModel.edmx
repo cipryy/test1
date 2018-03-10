@@ -1,0 +1,323 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="DataModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="DataModelStoreContainer">
+    <EntitySet Name="Enemies" EntityType="DataModel.Store.Enemies" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EnemyTypes" EntityType="DataModel.Store.EnemyTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Towers" EntityType="DataModel.Store.Towers" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TowerTypes" EntityType="DataModel.Store.TowerTypes" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Worlds" EntityType="DataModel.Store.Worlds" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CellTypes" EntityType="DataModel.Store.CellTypes" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="TowerTypeAssociation" Association="DataModel.Store.TowerTypeAssociation">
+      <End Role="Tower" EntitySet="Towers" />
+      <End Role="TowerType" EntitySet="TowerTypes" />
+    </AssociationSet>
+    <AssociationSet Name="EnemyEnemyType1" Association="DataModel.Store.EnemyEnemyType1">
+      <End Role="Enemy" EntitySet="Enemies" />
+      <End Role="EnemyType" EntitySet="EnemyTypes" />
+    </AssociationSet>
+    <AssociationSet Name="WorldCellType" Association="DataModel.Store.WorldCellType">
+      <End Role="World" EntitySet="Worlds" />
+      <End Role="CellType" EntitySet="CellTypes" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Enemies">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Level" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Level" Type="int" Nullable="false" />
+    <Property Name="HP" Type="int" Nullable="false" />
+    <Property Name="Speed" Type="int" Nullable="false" />
+    <Property Name="Type_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="EnemyTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Towers">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Level" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Level" Type="int" Nullable="false" />
+    <Property Name="Cost" Type="int" Nullable="false" />
+    <Property Name="Attack" Type="int" Nullable="false" />
+    <Property Name="Speed" Type="int" Nullable="false" />
+    <Property Name="Range" Type="int" Nullable="false" />
+    <Property Name="Type_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TowerTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Worlds">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="Sequence" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Sequence" Type="int" Nullable="false" />
+    <Property Name="X" Type="int" Nullable="false" />
+    <Property Name="Y" Type="int" Nullable="false" />
+    <Property Name="Type_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CellTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Type" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <Association Name="TowerTypeAssociation">
+    <End Role="Tower" Type="DataModel.Store.Towers" Multiplicity="*" />
+    <End Role="TowerType" Type="DataModel.Store.TowerTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="TowerType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Tower">
+        <PropertyRef Name="Type_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="EnemyEnemyType1">
+    <End Role="Enemy" Type="DataModel.Store.Enemies" Multiplicity="*" />
+    <End Role="EnemyType" Type="DataModel.Store.EnemyTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="EnemyType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Enemy">
+        <PropertyRef Name="Type_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="WorldCellType">
+    <End Role="World" Type="DataModel.Store.Worlds" Multiplicity="*" />
+    <End Role="CellType" Type="DataModel.Store.CellTypes" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="CellType">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="World">
+        <PropertyRef Name="Type_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="DataModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="DataModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Enemies" EntityType="DataModel.Enemy" />
+          <EntitySet Name="EnemyTypes" EntityType="DataModel.EnemyType" />
+          <EntitySet Name="Towers" EntityType="DataModel.Tower" />
+          <EntitySet Name="TowerTypes" EntityType="DataModel.TowerType" />
+          <AssociationSet Name="TowerTypeAssociation" Association="DataModel.TowerTypeAssociation">
+            <End Role="Tower" EntitySet="Towers" />
+            <End Role="TowerType" EntitySet="TowerTypes" />
+          </AssociationSet>
+          <AssociationSet Name="EnemyEnemyType1" Association="DataModel.EnemyEnemyType1">
+            <End Role="Enemy" EntitySet="Enemies" />
+            <End Role="EnemyType" EntitySet="EnemyTypes" />
+          </AssociationSet>
+          <EntitySet Name="Worlds" EntityType="DataModel.World" />
+          <EntitySet Name="CellTypes" EntityType="DataModel.CellType" />
+          <AssociationSet Name="WorldCellType" Association="DataModel.WorldCellType">
+            <End Role="World" EntitySet="Worlds" />
+            <End Role="CellType" EntitySet="CellTypes" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Enemy">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Level" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Level" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="None" />
+          <Property Name="HP" Type="Int32" Nullable="false" />
+          <Property Name="Speed" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Type" Relationship="DataModel.EnemyEnemyType1" FromRole="Enemy" ToRole="EnemyType" />
+        </EntityType>
+        <EntityType Name="EnemyType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tower">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Level" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Level" Type="Int32" Nullable="false" />
+          <Property Name="Cost" Type="Int32" Nullable="false" />
+          <Property Name="Attack" Type="Int32" Nullable="false" />
+          <Property Name="Speed" Type="Int32" Nullable="false" />
+          <Property Name="Range" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Type" Relationship="DataModel.TowerTypeAssociation" FromRole="Tower" ToRole="TowerType" />
+        </EntityType>
+        <EntityType Name="TowerType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="TowerTypeAssociation">
+          <End Type="DataModel.Tower" Role="Tower" Multiplicity="1" />
+          <End Type="DataModel.TowerType" Role="TowerType" Multiplicity="1" />
+        </Association>
+        <Association Name="EnemyEnemyType1">
+          <End Type="DataModel.Enemy" Role="Enemy" Multiplicity="1" />
+          <End Type="DataModel.EnemyType" Role="EnemyType" Multiplicity="1" />
+        </Association>
+        <EntityType Name="World">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Sequence" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+          <Property Name="X" Type="Int32" Nullable="false" />
+          <Property Name="Y" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Type" Relationship="DataModel.WorldCellType" FromRole="World" ToRole="CellType" />
+        </EntityType>
+        <EntityType Name="CellType">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" Nullable="false" />
+        </EntityType>
+        <Association Name="WorldCellType">
+          <End Type="DataModel.World" Role="World" Multiplicity="1" />
+          <End Type="DataModel.CellType" Role="CellType" Multiplicity="1" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DataModelStoreContainer" CdmEntityContainer="DataModelContainer">
+    <EntitySetMapping Name="Enemies">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Enemy)">
+        <MappingFragment StoreEntitySet="Enemies">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="HP" ColumnName="HP" />
+          <ScalarProperty Name="Speed" ColumnName="Speed" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EnemyTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.EnemyType)">
+        <MappingFragment StoreEntitySet="EnemyTypes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Towers">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.Tower)">
+        <MappingFragment StoreEntitySet="Towers">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Level" ColumnName="Level" />
+          <ScalarProperty Name="Cost" ColumnName="Cost" />
+          <ScalarProperty Name="Attack" ColumnName="Attack" />
+          <ScalarProperty Name="Speed" ColumnName="Speed" />
+          <ScalarProperty Name="Range" ColumnName="Range" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TowerTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.TowerType)">
+        <MappingFragment StoreEntitySet="TowerTypes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Worlds">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.World)">
+        <MappingFragment StoreEntitySet="Worlds">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+          <ScalarProperty Name="X" ColumnName="X" />
+          <ScalarProperty Name="Y" ColumnName="Y" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CellTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(DataModel.CellType)">
+        <MappingFragment StoreEntitySet="CellTypes">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="TowerTypeAssociation" TypeName="DataModel.TowerTypeAssociation" StoreEntitySet="Towers">
+      <EndProperty Name="TowerType">
+        <ScalarProperty Name="Id" ColumnName="Type_Id" />
+      </EndProperty>
+      <EndProperty Name="Tower">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+        <ScalarProperty Name="Level" ColumnName="Level" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="EnemyEnemyType1" TypeName="DataModel.EnemyEnemyType1" StoreEntitySet="Enemies">
+      <EndProperty Name="EnemyType">
+        <ScalarProperty Name="Id" ColumnName="Type_Id" />
+      </EndProperty>
+      <EndProperty Name="Enemy">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+        <ScalarProperty Name="Level" ColumnName="Level" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="WorldCellType" TypeName="DataModel.WorldCellType" StoreEntitySet="Worlds">
+      <EndProperty Name="CellType">
+        <ScalarProperty Name="Id" ColumnName="Type_Id" />
+      </EndProperty>
+      <EndProperty Name="World">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+        <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+      </EndProperty>
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

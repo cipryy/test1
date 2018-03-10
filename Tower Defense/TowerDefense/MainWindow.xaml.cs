@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace TowerDefense
 {
@@ -30,13 +31,75 @@ namespace TowerDefense
 
     public partial class MainWindow : Window
     {
+        Dictionary<int, Rectangle> enemyMap;
+
+        World[][] worldMap;
+        int counter = 1;
+
         public MainWindow()
         {
-
-
-
             InitializeComponent();
+            worldMap = CreateMap();
             draw();
+            testEnemies();
+
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += new EventHandler(timer_Tick);          // Everytime timer ticks, timer_Tick will be called
+            timer.Interval = TimeSpan.FromMilliseconds(100);    // Timer will tick evert second
+            timer.Start();
+        }
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+            for (int i = 0; i < counter; i++)
+                animateEnemy(i);
+
+            if (counter < 10)
+                counter++;
+        }
+
+        void testEnemies()
+        {
+            enemyMap = new Dictionary<int, Rectangle>();
+            for (int i = 0; i < 10; i++)
+            {
+                createEnemy(0, 0, i);
+            }
+        }
+
+        void createEnemy(int pozLin,int pozCol, int id)
+        {
+            Rectangle enem = new Rectangle();
+            
+            enem.Height = 10;
+            enem.Width = 10;
+            enem.Fill = Brushes.Red;
+
+            canvas.Children.Add(enem);
+            Canvas.SetTop(enem, pozLin * 20 + 5);
+            Canvas.SetLeft(enem, pozCol * 20 + 5);
+
+            enemyMap.Add(id, enem);
+        }
+
+        void animateEnemy(int id)
+        {
+            Rectangle drpt;
+            enemyMap.TryGetValue(id, out drpt);
+
+            int y = (int)Canvas.GetLeft(drpt) / 20;
+            int x = (int)Canvas.GetTop(drpt) / 20;
+            //while (true)
+            {
+                if (worldMap[x][y].Type.Type == "Down")
+                    Canvas.SetTop(drpt, Canvas.GetTop(drpt) + 20);
+                else if (worldMap[x][y].Type.Type == "Right")
+                    Canvas.SetLeft(drpt, Canvas.GetLeft(drpt) + 20);
+                else if (worldMap[x][y].Type.Type == "Up")
+                    Canvas.SetTop(drpt, Canvas.GetTop(drpt) - 20);
+                else if (worldMap[x][y].Type.Type == "Left")
+                    Canvas.SetLeft(drpt, Canvas.GetLeft(drpt) - 20);
+            }
         }
 
         void GenerateDatabase()
@@ -44,12 +107,16 @@ namespace TowerDefense
 
         }
 
+       
+
+
+
         public World[][] CreateMap()
         {
 
             Celltype[][] ct = new Celltype[25][]
              {
-                new Celltype[] {Celltype.StartPoint,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Down},
+                new Celltype[] {Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Right,Celltype.Down},
                 new Celltype[] {Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Down},
                 new Celltype[] {Celltype.Down,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left,Celltype.Left},
                 new Celltype[] {Celltype.Down,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall,Celltype.Wall},
@@ -134,7 +201,7 @@ namespace TowerDefense
         }
         public void draw()
         {
-            World[][] map = CreateMap();
+            World[][] map = worldMap;
             int i, j;
             for (i = 0; i < 25; i++)
                 for (j = 0; j < 35; j++)

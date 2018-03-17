@@ -28,20 +28,25 @@ namespace TowerDefense
         Right
     }
 
-
     public partial class MainWindow : Window
     {
         Dictionary<int, Rectangle> enemyMap;
+        Dictionary<int, Rectangle> towerMap;
+        int nextTowerId = 0;
 
         World[][] worldMap;
         int counter = 1;
+        public Rectangle selectedWall { get; set; }
 
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
             worldMap = CreateMap();
+            towerMap = new Dictionary<int, Rectangle>();
             draw();
             testEnemies();
+            selectedWall = null;
 
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += new EventHandler(timer_Tick);          // Everytime timer ticks, timer_Tick will be called
@@ -53,6 +58,40 @@ namespace TowerDefense
         {
             for (int i = 0; i < counter; i++)
                 animateEnemy(i);
+
+            int range = 100;
+
+            for (int i = 0; i < towerMap.Count; i++)
+            {
+                Rectangle tower = towerMap[i];
+
+                double towerX = Canvas.GetLeft(tower);
+                double towerY = Canvas.GetTop(tower);
+
+                for (int j = 0; j < enemyMap.Count; j++)
+                {
+                    Rectangle enemy = enemyMap[j];
+
+                    double enemyX = Canvas.GetLeft(enemy);
+                    double enemyY = Canvas.GetTop(enemy);
+
+                    double ys = Math.Pow(towerY - enemyY, 2);
+                    double xs = Math.Pow(towerX - enemyX, 2);
+                    double distance = Math.Sqrt(xs + ys);
+
+                    if (distance > range)
+                    {
+                        tower.Fill = Brushes.Blue;
+                    }
+                    else
+                    {
+                        tower.Fill = Brushes.Red;
+                        break;
+                    }
+                }
+            }
+
+
 
             if (counter < 10)
                 counter++;
@@ -217,6 +256,7 @@ namespace TowerDefense
                     {
                         r.MouseEnter += rectangleEnter;
                         r.MouseLeave += rectangleLeave;
+                        r.PreviewMouseLeftButtonUp += rectangleClicked;
 
                         Image img = Application.Current.Resources["Wall"] as Image;
                         backgroundBrush.ImageSource = img.Source;
@@ -251,20 +291,76 @@ namespace TowerDefense
 
         private void rectangleEnter(object sender, MouseEventArgs e)
         {
-            
             Rectangle r = sender as Rectangle;
-            
-            r.Fill = Brushes.Blue;
 
+            if (r != selectedWall)
+            {
+                r.Fill = Brushes.Blue;
+            }
         }
 
         private void rectangleLeave(object sender, MouseEventArgs e)
         {
             Rectangle r = sender as Rectangle;
-            ImageBrush backgroundBrush = new ImageBrush();
-            Image img = Application.Current.Resources["Wall"] as Image;
-            backgroundBrush.ImageSource = img.Source;
-            r.Fill = backgroundBrush;
+            if (r != selectedWall)
+            {
+                ImageBrush backgroundBrush = new ImageBrush();
+                Image img = Application.Current.Resources["Wall"] as Image;
+                backgroundBrush.ImageSource = img.Source;
+                r.Fill = backgroundBrush;
+            }
+        }
+
+        private void rectangleClicked(object sender, MouseButtonEventArgs e)
+        {
+            Rectangle r = e.OriginalSource as Rectangle;
+
+            int y = (int)Canvas.GetLeft(r) / 20;
+            int x = (int)Canvas.GetTop(r) / 20;
+
+            if (worldMap[x][y].Type.Type == "Wall")
+            {
+                Rectangle oldSelected = selectedWall;
+                selectedWall = r;
+                selectedWall.Fill = Brushes.Black;
+                popup.HorizontalOffset = Canvas.GetLeft(r) - 35;
+                popup.VerticalOffset = Canvas.GetTop(r) - 30;
+                popup.IsOpen = true;
+
+                if (oldSelected != null)
+                    rectangleLeave(oldSelected, e);
+            }
+        }
+
+        private void buildTower(object sender, RoutedEventArgs e)
+        {
+            Rectangle tower = new Rectangle();
+            tower.Height = 16;
+            tower.Width = 16;
+            tower.Fill = Brushes.Blue;
+
+            double top = Canvas.GetTop(selectedWall);
+            double left = Canvas.GetLeft(selectedWall);
+
+            Canvas.SetTop(tower, top + 2);
+            Canvas.SetLeft(tower, left + 2);
+            canvas.Children.Add(tower);
+
+            towerMap[nextTowerId] = tower;
+
+            cancel(sender, null);
+
+            nextTowerId++;
+        }
+
+        private void cancel(object sender, MouseButtonEventArgs e)
+        {
+            Rectangle oldSelected = selectedWall;
+            selectedWall = null;
+            if (oldSelected != null)
+                rectangleLeave(oldSelected, null);
+
+            popup.IsOpen = false;
         }
     }
 }
